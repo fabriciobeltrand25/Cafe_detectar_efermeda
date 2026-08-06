@@ -13,7 +13,7 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 # -------------------------------------------------------
 
 st.set_page_config(
-    page_title="Cafe Detecter - Diagnóstico Foliar",
+    page_title="Cafe Detecter - Diagnóstico Foliar- Fabricio Beltrand",
     page_icon="☕",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -73,14 +73,6 @@ h1, h2, h3, h4 {
     border: 1px solid #DED3C8;
 }
 
-.info-card {
-    background: white;
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.04);
-    margin-top: 15px;
-}
-
 .metric-title {
     font-size: 12px;
     letter-spacing: 2px;
@@ -109,6 +101,59 @@ h1, h2, h3, h4 {
     color: #75685C;
     margin-bottom: 25px;
 }
+
+/* ---- ESTILOS PARA LOS PASOS ---- */
+.step-container {
+    background: white;
+    border-radius: 18px;
+    padding: 25px 30px;
+    margin-top: 20px;
+    border: 1px solid #E2D7CC;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #F0EAE3;
+}
+
+.step:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.step-number {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #1E5B43;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    color: white;
+    margin-right: 18px;
+    font-size: 14px;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+}
+
+.step-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #2B1A10;
+}
+
+.step-text {
+    font-size: 14px;
+    color: #4A3C33;
+    line-height: 1.8;
+}
+/* ---- FIN ESTILOS PASOS ---- */
 
 .history {
     background: white;
@@ -200,34 +245,144 @@ modelo = cargar_modelo()
 clases, img_size, mapa_enfermedades = cargar_config()
 
 # -------------------------------------------------------
-# INFORMACIÓN DE ENFERMEDADES
+# INFORMACIÓN DE ENFERMEDADES + RECOMENDACIONES
 # -------------------------------------------------------
 
 INFO_ENFERMEDADES = {
     "roya": {
         "nombre": "Roya del Café",
         "cientifico": "Hemileia vastatrix",
-        "severidad": "Alta"
+        "severidad": "Alta",
+        "pasos": [
+            {
+                "titulo": "Diferenciación a simple vista",
+                "texto": "Roya anaranjada (Hemileia vastatrix) produce pústulas de color naranja-amarillo en el envés de la hoja, que al frotarse liberan polvo anaranjado (esporas). Se diferencia de Cercospora por la ausencia de halos definidos y por su distribución en manchas irregulares que coalescen."
+            },
+            {
+                "titulo": "Manejo agronómico preventivo y correctivo",
+                "texto": "Mantener sombra moderada (40-50%) para reducir estrés hídrico. Aplicar fungicidas sistémicos (triazoles o estrobilurinas) en épocas de alta humedad. Realizar podas sanitarias para eliminar hojas infectadas. Evitar exceso de nitrógeno que favorece tejido tierno susceptible."
+            },
+            {
+                "titulo": "Consulta a un técnico IHCAFE",
+                "texto": "Consulte si la infección supera el 20% del follaje o si aparecen brotes en ramas bajas. El técnico evaluará la necesidad de fungicidas específicos y ajustará el plan de manejo integrado."
+            },
+            {
+                "titulo": "Monitoreo y seguimiento",
+                "texto": "Monitoree semanalmente en épocas lluviosas (mayo-noviembre). Revise el tercio inferior de la planta donde inicia la infección. Mejora: disminución de pústulas y brotes verdes. Empeora: defoliación y pérdida de producción."
+            },
+            {
+                "titulo": "Registro y trazabilidad",
+                "texto": "Registre incidencia semanal, condiciones climáticas (humedad, temperatura), aplicaciones fungicidas y resultados. Documente si la parcela está en zonas bajas o con alta humedad relativa."
+            }
+        ]
     },
     "cercospora": {
         "nombre": "Cercospora / Mancha de Hierro",
         "cientifico": "Cercospora coffeicola",
-        "severidad": "Media - Alta"
+        "severidad": "Media - Alta",
+        "pasos": [
+            {
+                "titulo": "Diferenciación a simple vista",
+                "texto": "Cercospora coffeicola produce manchas circulares de 3-8 mm con centro grisáceo-necrótico y halo amarillo-anaranjado. A diferencia de la Roya, no hay pústulas en relieve ni esporas en el envés. Se confunde frecuentemente con manchas de nutrición (deficiencia de Mn), pero estas carecen del halo definido y son más irregulares."
+            },
+            {
+                "titulo": "Manejo agronómico preventivo y correctivo",
+                "texto": "Aumentar fertilización nitrogenada (urea foliar al 2%) y potásica. Regular sombra al 40-50% para reducir estrés hídrico. Aplicar caldo bordelés preventivo antes de lluvias intensas. En brotes activos, usar fungicidas específicos con mancozeb o clorotalonil. Evitar trabajos en campo con follaje mojado para no diseminar esporas."
+            },
+            {
+                "titulo": "Consulta a un técnico IHCAFE",
+                "texto": "Consulte si las manchas aparecen en más del 30% del follaje o si persisten tras dos aplicaciones fungicidas. El técnico analizará niveles de N y K en suelo/hoja para descartar que sea un problema nutricional primario que debilite el tejido y facilite la infección."
+            },
+            {
+                "titulo": "Monitoreo y seguimiento",
+                "texto": "Monitoree quincenalmente en épocas secas y calurosas (febrero-abril), cuando el estrés hídrico potencia la enfermedad. Revise hojas del tercio medio de la planta. Mejora: nuevas hojas sin manchas, recuperación del color verde intenso. Empeora: coalescencia de manchas, secado de bordes foliares."
+            },
+            {
+                "titulo": "Registro y trazabilidad",
+                "texto": "Registre análisis foliar bianuales, niveles de sombra (% cobertura), tipo de sombra (Inga, Erythrina, malla), fecha de aplicaciones y condiciones climáticas previas. Documente si la parcela está en ladera expuesta al sol (mayor riesgo). Estos datos son clave para ajustar el manejo integral del cultivo."
+            }
+        ]
     },
     "phoma": {
         "nombre": "Phoma / Derretimiento",
         "cientifico": "Phoma costarricensis",
-        "severidad": "Alta"
+        "severidad": "Alta",
+        "pasos": [
+            {
+                "titulo": "Diferenciación a simple vista",
+                "texto": "Phoma costarricensis produce manchas necróticas de forma irregular que avanzan desde el borde de la hoja hacia el centro, con un color marrón oscuro. En ataques severos causa 'derretimiento' de hojas tiernas. Se diferencia de la Roya por la ausencia de pústulas y su avance desde el margen foliar."
+            },
+            {
+                "titulo": "Manejo agronómico preventivo y correctivo",
+                "texto": "Mantener buena aireación entre plantas. Evitar riego por aspersión. Aplicar fungicidas protectores (clorotalonil) en épocas de alta humedad. En ataques severos, usar fungicidas sistémicos (tebuconazol). Realizar podas de renovación en ramas afectadas."
+            },
+            {
+                "titulo": "Consulta a un técnico IHCAFE",
+                "texto": "Consulte si el daño supera el 15% del follaje o si afecta ramas productivas. El técnico evaluará la necesidad de aplicaciones específicas y ajustará el programa de fertilización."
+            },
+            {
+                "titulo": "Monitoreo y seguimiento",
+                "texto": "Monitoree semanalmente en épocas lluviosas. Revise brotes tiernos y hojas del tercio superior. Mejora: detención del avance de manchas, brotes sanos. Empeora: defoliación y muerte de ramas."
+            },
+            {
+                "titulo": "Registro y trazabilidad",
+                "texto": "Registre condiciones climáticas, densidad de siembra, aplicaciones fungicidas y severidad del daño. Documente si hay historial de la enfermedad en la parcela."
+            }
+        ]
     },
     "minador": {
         "nombre": "Minador de la Hoja",
         "cientifico": "Leucoptera coffeella",
-        "severidad": "Media"
+        "severidad": "Media",
+        "pasos": [
+            {
+                "titulo": "Diferenciación a simple vista",
+                "texto": "Leucoptera coffeella produce minas (galerías) serpentiformes en el haz de la hoja, de color marrón claro. Las larvas se alimentan del parénquima. Se diferencia de enfermedades fúngicas por la forma de galería y la ausencia de esporas o pústulas."
+            },
+            {
+                "titulo": "Manejo agronómico preventivo y correctivo",
+                "texto": "Mantener sombra adecuada para reducir población de la plaga. Aplicar insecticidas específicos (lambda-cialotrina) en épocas de brotación. Realizar control biológico con parasitoides (Trichogramma)."
+            },
+            {
+                "titulo": "Consulta a un técnico IHCAFE",
+                "texto": "Consulte si más del 40% de las hojas presentan minas. El técnico evaluará la necesidad de control químico y ajustará el manejo integrado de plagas."
+            },
+            {
+                "titulo": "Monitoreo y seguimiento",
+                "texto": "Monitoree semanalmente en épocas secas. Revise hojas del tercio superior. Mejora: disminución de minas nuevas. Empeora: aumento de galerías y defoliación."
+            },
+            {
+                "titulo": "Registro y trazabilidad",
+                "texto": "Registre población de la plaga, aplicaciones insecticidas, y resultados. Documente si hay presencia de parasitoides naturales."
+            }
+        ]
     },
     "sana": {
         "nombre": "Hoja Sana",
         "cientifico": "Coffea arabica",
-        "severidad": "Sin Riesgo"
+        "severidad": "Sin Riesgo",
+        "pasos": [
+            {
+                "titulo": "Condición de la planta",
+                "texto": "La hoja presenta un color verde intenso y uniforme, sin manchas, pústulas o galerías. El tejido foliar está firme y sin daños visibles."
+            },
+            {
+                "titulo": "Manejo preventivo",
+                "texto": "Mantener prácticas agronómicas adecuadas: fertilización balanceada, manejo de sombra, y riego controlado. La prevención es clave para mantener el cultivo sano."
+            },
+            {
+                "titulo": "Monitoreo continuo",
+                "texto": "Realice monitoreos regulares para detectar tempranamente cualquier cambio en el follaje. La detección temprana es fundamental para el manejo efectivo."
+            },
+            {
+                "titulo": "Registro de condiciones",
+                "texto": "Documente condiciones climáticas, prácticas de manejo y estado del cultivo para mantener trazabilidad."
+            },
+            {
+                "titulo": "Seguimiento",
+                "texto": "Continúe con el monitoreo quincenal para asegurar la detección temprana de cualquier patología."
+            }
+        ]
     }
 }
 
@@ -237,6 +392,25 @@ INFO_ENFERMEDADES = {
 
 if "historial" not in st.session_state:
     st.session_state.historial = []
+
+# -------------------------------------------------------
+# FUNCIÓN PARA GENERAR PASOS HTML
+# -------------------------------------------------------
+
+def generar_pasos_html(pasos):
+    html = '<div class="step-container">'
+    for i, paso in enumerate(pasos, 1):
+        html += f'''
+        <div class="step">
+            <div class="step-number">{i:02d}</div>
+            <div>
+                <div class="step-title">{paso["titulo"]}</div>
+                <div class="step-text">{paso["texto"]}</div>
+            </div>
+        </div>
+        '''
+    html += '</div>'
+    return html
 
 # -------------------------------------------------------
 # CABECERA PRINCIPAL
@@ -322,6 +496,7 @@ with col_der:
     confianza = 0.0
     diagnostico_generado = False
     clase = None
+    pasos = []
     
     # ---------------------------------------
     # PROCESAR IMAGEN CON EL MODELO
@@ -342,12 +517,14 @@ with col_der:
         info = INFO_ENFERMEDADES.get(clase, {
             "nombre": clase.upper(),
             "cientifico": "N/A",
-            "severidad": "N/A"
+            "severidad": "N/A",
+            "pasos": []
         })
         
         nombre = info["nombre"]
         cientifico = info["cientifico"]
         severidad = info["severidad"]
+        pasos = info.get("pasos", [])
         diagnostico_generado = True
         
         # Actualizar historial
@@ -381,61 +558,24 @@ with col_der:
     st.markdown('<div class="result-box">', unsafe_allow_html=True)
     
     if diagnostico_generado:
-        st.success(f"Nivel de severidad detectado: {severidad}")
+        st.success(f"✅ Nivel de severidad detectado: {severidad}")
+        
+        # Si hay pasos, mostrarlos aquí (estilo segunda imagen)
+        if pasos:
+            st.markdown("---")
+            st.markdown("### 📋 Orientación y manejo preventivo")
+            st.markdown("Aquí tienes una recomendación técnica detallada para manejar la situación:")
+            
+            # Generar y mostrar pasos en formato HTML
+            pasos_html = generar_pasos_html(pasos)
+            st.markdown(pasos_html, unsafe_allow_html=True)
+            
     else:
         st.info("Cargue una imagen para comenzar el diagnóstico.")
     
     st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
-    
-    # ---------------------------------------
-    # INTEGRACIÓN API GROQ (Recomendaciones técnicas)
-    # ---------------------------------------
-    
-    if diagnostico_generado:
-        st.markdown("### 💡 Recomendación Técnica")
-        
-        api_key = st.secrets.get("GROQ_API_KEY", os.getenv("GROQ_API_KEY", ""))
-        
-        if api_key:
-            with st.spinner("Generando informe técnico con IA..."):
-                prompt = f"""
-                Actúa como un agrónomo especialista en el cultivo de café.
-                Proporciona un informe técnico estructurado para la condición detectada:
-
-                Condición: {nombre} ({cientifico})
-                Porcentaje de confianza: {confianza:.2f}%
-                Severidad: {severidad}
-
-                Por favor incluye:
-                1. Descripción breve de la enfermedad o condición.
-                2. Recomendaciones técnicas para el manejo preventivo y correctivo.
-                3. Buenas prácticas para el cuidado del cultivo.
-                4. Acciones de seguimiento y monitoreo recomendado.
-                """
-                
-                try:
-                    client = OpenAI(
-                        api_key=api_key,
-                        base_url="https://api.groq.com/openai/v1"
-                    )
-                    
-                    respuesta = client.chat.completions.create(
-                        model="llama-3.1-8b-instant",
-                        messages=[
-                            {"role": "system", "content": "Eres un asesor técnico agrónomo profesional experto en caficultura."},
-                            {"role": "user", "content": prompt}
-                        ],
-                        temperature=0.3
-                    )
-                    
-                    st.info(respuesta.choices[0].message.content)
-                    
-                except Exception as e:
-                    st.warning(f"Error al conectar con la API de Groq: {e}")
-        else:
-            st.warning("⚠️ Agregue su `GROQ_API_KEY` en los Secretos de Streamlit Cloud para activar el informe agrónomo.")
     
     # ---------------------------------------
     # HISTORIAL RECIENTE
@@ -452,10 +592,20 @@ with col_der:
         <div class="history">No existen diagnósticos.</div>
         """, unsafe_allow_html=True)
     else:
-        for item in st.session_state.historial:
-            st.markdown(f"""
-            <div class="history">🟤 {item}</div>
-            """, unsafe_allow_html=True)
+        from datetime import datetime
+        fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
+        for i, item in enumerate(st.session_state.historial):
+            if i == 0:
+                st.markdown(f"""
+                <div class="history">
+                    <strong>🟤 {item}</strong><br>
+                    <span style="font-size:12px; color:#8B8076;">{fecha_actual}</span>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                <div class="history">🟤 {item}</div>
+                """, unsafe_allow_html=True)
     
     # ---------------------------------------
     # PIE DE PÁGINA
