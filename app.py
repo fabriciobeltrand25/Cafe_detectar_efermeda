@@ -13,7 +13,7 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 # -------------------------------------------------------
 
 st.set_page_config(
-    page_title="Cafe Detecter - Diagnóstico Foliar- Fabricio Beltrand",
+    page_title="Cafe Detecter - Diagnóstico Foliar",
     page_icon="☕",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -104,11 +104,7 @@ h1, h2, h3, h4 {
 
 /* ---- ESTILOS PARA LOS PASOS ---- */
 .step-container {
-    background: white;
-    border-radius: 18px;
-    padding: 25px 30px;
     margin-top: 20px;
-    border: 1px solid #E2D7CC;
 }
 
 .step {
@@ -116,7 +112,7 @@ h1, h2, h3, h4 {
     align-items: flex-start;
     margin-bottom: 22px;
     padding-bottom: 22px;
-    border-bottom: 1px solid #F0EAE3;
+    border-bottom: 1px solid #E2D7CC;
 }
 
 .step:last-child {
@@ -152,6 +148,20 @@ h1, h2, h3, h4 {
     font-size: 14px;
     color: #4A3C33;
     line-height: 1.8;
+}
+
+.step-orientation-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2A1A10;
+    margin-bottom: 8px;
+    margin-top: 10px;
+}
+
+.step-orientation-subtitle {
+    font-size: 15px;
+    color: #4A3C33;
+    margin-bottom: 20px;
 }
 /* ---- FIN ESTILOS PASOS ---- */
 
@@ -399,6 +409,13 @@ if "historial" not in st.session_state:
 
 def generar_pasos_html(pasos):
     html = '<div class="step-container">'
+    
+    # Títulos de orientación
+    html += '''
+    <div class="step-orientation-title">📋 Orientación y manejo preventivo</div>
+    <div class="step-orientation-subtitle">Aquí tienes una recomendación técnica detallada para manejar la situación:</div>
+    '''
+    
     for i, paso in enumerate(pasos, 1):
         html += f'''
         <div class="step">
@@ -532,7 +549,7 @@ with col_der:
         st.session_state.historial = st.session_state.historial[:5]
     
     # ---------------------------------------
-    # MOSTRAR RESULTADO
+    # MOSTRAR RESULTADO (DENTRO DEL RESULT-BOX)
     # ---------------------------------------
     
     c1, c2 = st.columns([4, 1])
@@ -552,7 +569,7 @@ with col_der:
         """, unsafe_allow_html=True)
     
     # ---------------------------------------
-    # PANEL DE SEVERIDAD
+    # PANEL RESULT-BOX (TODO DENTRO)
     # ---------------------------------------
     
     st.markdown('<div class="result-box">', unsafe_allow_html=True)
@@ -560,12 +577,11 @@ with col_der:
     if diagnostico_generado:
         st.success(f"✅ Nivel de severidad detectado: {severidad}")
         
-        # Si hay pasos, mostrarlos aquí (estilo segunda imagen)
+        # --- LÍNEA SEPARADORA ---
+        st.markdown("---")
+        
+        # --- ORIENTACIÓN Y MANEJO PREVENTIVO (DENTRO DEL RESULT-BOX) ---
         if pasos:
-            st.markdown("---")
-            st.markdown("### 📋 Orientación y manejo preventivo")
-            st.markdown("Aquí tienes una recomendación técnica detallada para manejar la situación:")
-            
             # Generar y mostrar pasos en formato HTML
             pasos_html = generar_pasos_html(pasos)
             st.markdown(pasos_html, unsafe_allow_html=True)
@@ -575,11 +591,11 @@ with col_der:
     
     st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    # ---------------------------------------
+    # HISTORIAL RECIENTE (FUERA DEL RESULT-BOX)
+    # ---------------------------------------
     
-    # ---------------------------------------
-    # HISTORIAL RECIENTE
-    # ---------------------------------------
+    st.markdown("<br>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class="metric-title" style="margin-top: 25px;">
