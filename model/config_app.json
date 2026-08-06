@@ -1,0 +1,22 @@
+{
+    "proyecto": "AgroDetect v2.0 - Diagnostico Foliar de Cafe",
+    "clases": [
+        "cercospora",
+        "minador",
+        "phoma",
+        "roya",
+        "sana"
+    ],
+    "mapa_enfermedades": {
+        "0": "cercospora",
+        "1": "minador",
+        "2": "phoma",
+        "3": "roya",
+        "4": "sana"
+    },
+    "img_size": [
+        224,
+        224
+    ],
+    "umbral_decision": 0.6
+}
