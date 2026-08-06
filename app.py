@@ -66,11 +66,21 @@ h1, h2, h3, h4 {
     border: 2px dashed #DDD5CC;
 }
 
+/* ---- CUADRO PRINCIPAL DE RESULTADO (cafecito claro) ---- */
 .result-box {
     background: #EEE6DD;
     padding: 30px;
     border-radius: 22px;
     border: 1px solid #DED3C8;
+}
+
+.result-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
 }
 
 .metric-title {
@@ -85,45 +95,79 @@ h1, h2, h3, h4 {
     font-size: 52px;
     font-weight: 800;
     color: #2A1A10;
+    line-height: 1;
 }
 
 .disease-title {
-    font-size: 42px;
+    font-size: 38px;
     font-weight: 800;
     color: #2A1A10;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
 }
 
 .scientific {
     font-style: italic;
     font-size: 14px;
     color: #75685C;
-    margin-bottom: 25px;
 }
 
-/* ---- ESTILOS PARA LOS PASOS ---- */
+.severity-pill {
+    display: inline-block;
+    background: #DCEFE1;
+    color: #1E5B43;
+    border: 1px solid #C3E3CD;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.info-pill {
+    display: inline-block;
+    background: #E7EEF5;
+    color: #2E4E6B;
+    border: 1px solid #CFDEEA;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.orientacion-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2B1A10;
+    margin-top: 22px;
+    margin-bottom: 4px;
+}
+
+.orientacion-sub {
+    font-size: 13px;
+    color: #7B6D62;
+    margin-bottom: 14px;
+}
+
+/* ---- ESTILOS PARA LOS PASOS (dentro del mismo cuadro, sin caja blanca aparte) ---- */
 .step-container {
-    margin-top: 20px;
+    margin-top: 6px;
 }
 
 .step {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 22px;
-    padding-bottom: 22px;
-    border-bottom: 1px solid #E2D7CC;
+    padding: 16px 0;
+    border-bottom: 1px solid #DED3C8;
 }
 
 .step:last-child {
     border-bottom: none;
-    margin-bottom: 0;
     padding-bottom: 0;
 }
 
 .step-number {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
     border-radius: 10px;
     background: #1E5B43;
     display: flex;
@@ -131,37 +175,23 @@ h1, h2, h3, h4 {
     align-items: center;
     font-weight: 800;
     color: white;
-    margin-right: 18px;
-    font-size: 14px;
+    margin-right: 16px;
+    font-size: 13px;
     flex-shrink: 0;
     letter-spacing: 0.5px;
 }
 
 .step-title {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 700;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     color: #2B1A10;
 }
 
 .step-text {
-    font-size: 14px;
+    font-size: 13.5px;
     color: #4A3C33;
-    line-height: 1.8;
-}
-
-.step-orientation-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #2A1A10;
-    margin-bottom: 8px;
-    margin-top: 10px;
-}
-
-.step-orientation-subtitle {
-    font-size: 15px;
-    color: #4A3C33;
-    margin-bottom: 20px;
+    line-height: 1.7;
 }
 /* ---- FIN ESTILOS PASOS ---- */
 
@@ -240,15 +270,15 @@ def cargar_modelo():
 def cargar_config():
     if not os.path.exists(CONFIG_PATH):
         return CLASES_DEFAULT, IMG_SIZE_DEFAULT, {}
-    
+
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:
         cfg = json.load(f)
-    
+
     clases = cfg.get("clases", CLASES_DEFAULT)
     img_size = tuple(cfg.get("img_size", IMG_SIZE_DEFAULT))
     mapa_raw = cfg.get("mapa_enfermedades", {})
     mapa = {int(k): str(v) for k, v in mapa_raw.items()}
-    
+
     return clases, img_size, mapa
 
 modelo = cargar_modelo()
@@ -405,29 +435,56 @@ if "historial" not in st.session_state:
 
 # -------------------------------------------------------
 # FUNCIÓN PARA GENERAR PASOS HTML
+# (Sin saltos de línea ni indentación: evita que Streamlit lo
+#  interprete como bloque de código en vez de HTML)
 # -------------------------------------------------------
 
 def generar_pasos_html(pasos):
-    html = '<div class="step-container">'
-    
-    # Títulos de orientación
-    html += '''
-    <div class="step-orientation-title">📋 Orientación y manejo preventivo</div>
-    <div class="step-orientation-subtitle">Aquí tienes una recomendación técnica detallada para manejar la situación:</div>
-    '''
-    
+    items = []
     for i, paso in enumerate(pasos, 1):
-        html += f'''
-        <div class="step">
-            <div class="step-number">{i:02d}</div>
-            <div>
-                <div class="step-title">{paso["titulo"]}</div>
-                <div class="step-text">{paso["texto"]}</div>
-            </div>
-        </div>
-        '''
-    html += '</div>'
-    return html
+        items.append(
+            '<div class="step">'
+            '<div class="step-number">' + f"{i:02d}" + '</div>'
+            '<div>'
+            '<div class="step-title">' + str(paso["titulo"]) + '</div>'
+            '<div class="step-text">' + str(paso["texto"]) + '</div>'
+            '</div>'
+            '</div>'
+        )
+    return '<div class="step-container">' + ''.join(items) + '</div>'
+
+
+def generar_resultado_html(nombre, cientifico, confianza, severidad, pasos, diagnostico_generado):
+    """
+    Genera TODO el cuadro cafecito claro (resultado + orientación) como
+    un único bloque HTML, en un solo st.markdown(), para que el
+    contenedor no se rompa y no se muestre código crudo.
+    """
+    encabezado = (
+        '<div class="result-top">'
+        '<div>'
+        f'<div class="disease-title">{nombre}</div>'
+        f'<div class="scientific">{cientifico}</div>'
+        '</div>'
+        '<div style="text-align:right">'
+        f'<div class="metric-big">{confianza:.1f}%</div>'
+        '<div class="metric-title">CONFIANZA</div>'
+        '</div>'
+        '</div>'
+    )
+
+    if diagnostico_generado:
+        cuerpo = f'<div class="severity-pill">✅ Nivel de severidad detectado: {severidad}</div>'
+        if pasos:
+            cuerpo += (
+                '<div class="orientacion-title">📋 Orientación y manejo preventivo</div>'
+                '<div class="orientacion-sub">Aquí tienes una recomendación técnica detallada para manejar la situación:</div>'
+                + generar_pasos_html(pasos)
+            )
+    else:
+        cuerpo = '<div class="info-pill">ℹ️ Cargue una imagen para comenzar el diagnóstico.</div>'
+
+    return '<div class="result-box">' + encabezado + cuerpo + '</div>'
 
 # -------------------------------------------------------
 # CABECERA PRINCIPAL
@@ -455,16 +512,16 @@ col_izq, col_der = st.columns([1.08, 1], gap="large")
 
 with col_izq:
     st.markdown("### 📷 Captura de Imagen")
-    
+
     metodo = st.radio(
         "",
         ["📁 Subir archivo", "📷 Usar cámara"],
         horizontal=True,
         label_visibility="collapsed"
     )
-    
+
     imagen_pil = None
-    
+
     if metodo == "📁 Subir archivo":
         archivo = st.file_uploader(
             "Seleccione una imagen",
@@ -477,9 +534,9 @@ with col_izq:
         foto = st.camera_input("Tomar fotografía")
         if foto is not None:
             imagen_pil = Image.open(foto).convert("RGB")
-    
+
     st.markdown("<br>", unsafe_allow_html=True)
-    
+
     if imagen_pil is not None:
         st.image(imagen_pil, caption="Imagen seleccionada", use_container_width=True)
     else:
@@ -500,12 +557,8 @@ with col_izq:
 # ======================================================
 
 with col_der:
-    st.markdown("""
-    <div class="metric-title">
-    ÚLTIMO DIAGNÓSTICO
-    </div>
-    """, unsafe_allow_html=True)
-    
+    st.markdown('<div class="metric-title">ÚLTIMO DIAGNÓSTICO</div>', unsafe_allow_html=True)
+
     # Variables por defecto
     nombre = "--"
     cientifico = "--"
@@ -514,22 +567,22 @@ with col_der:
     diagnostico_generado = False
     clase = None
     pasos = []
-    
+
     # ---------------------------------------
     # PROCESAR IMAGEN CON EL MODELO
     # ---------------------------------------
-    
+
     if imagen_pil is not None and modelo is not None:
         img_rgb = imagen_pil.convert("RGB")
         img_resized = img_rgb.resize(img_size)
         img_array = np.array(img_resized)
         img_batch = np.expand_dims(img_array, axis=0)
         img_preprocessed = preprocess_input(img_batch)
-        
+
         predicciones = modelo.predict(img_preprocessed, verbose=0)[0]
         idx_clase = np.argmax(predicciones)
         confianza = float(predicciones[idx_clase]) * 100
-        
+
         clase = mapa_enfermedades.get(idx_clase, clases[idx_clase])
         info = INFO_ENFERMEDADES.get(clase, {
             "nombre": clase.upper(),
@@ -537,96 +590,55 @@ with col_der:
             "severidad": "N/A",
             "pasos": []
         })
-        
+
         nombre = info["nombre"]
         cientifico = info["cientifico"]
         severidad = info["severidad"]
         pasos = info.get("pasos", [])
         diagnostico_generado = True
-        
+
         # Actualizar historial
         st.session_state.historial.insert(0, nombre)
         st.session_state.historial = st.session_state.historial[:5]
-    
+
     # ---------------------------------------
-    # MOSTRAR RESULTADO (DENTRO DEL RESULT-BOX)
+    # MOSTRAR RESULTADO (un solo bloque HTML, todo dentro del cuadro)
     # ---------------------------------------
-    
-    c1, c2 = st.columns([4, 1])
-    
-    with c1:
-        st.markdown(f"""
-        <div class="disease-title">{nombre}</div>
-        <div class="scientific">{cientifico}</div>
-        """, unsafe_allow_html=True)
-    
-    with c2:
-        st.markdown(f"""
-        <div style="text-align:right">
-            <div class="metric-big">{confianza:.1f}%</div>
-            <div class="metric-title">CONFIANZA</div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # ---------------------------------------
-    # PANEL RESULT-BOX (TODO DENTRO)
-    # ---------------------------------------
-    
-    st.markdown('<div class="result-box">', unsafe_allow_html=True)
-    
-    if diagnostico_generado:
-        st.success(f"✅ Nivel de severidad detectado: {severidad}")
-        
-        # --- LÍNEA SEPARADORA ---
-        st.markdown("---")
-        
-        # --- ORIENTACIÓN Y MANEJO PREVENTIVO (DENTRO DEL RESULT-BOX) ---
-        if pasos:
-            # Generar y mostrar pasos en formato HTML
-            pasos_html = generar_pasos_html(pasos)
-            st.markdown(pasos_html, unsafe_allow_html=True)
-            
-    else:
-        st.info("Cargue una imagen para comenzar el diagnóstico.")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    # ---------------------------------------
-    # HISTORIAL RECIENTE (FUERA DEL RESULT-BOX)
-    # ---------------------------------------
-    
+
+    resultado_html = generar_resultado_html(
+        nombre, cientifico, confianza, severidad, pasos, diagnostico_generado
+    )
+    st.markdown(resultado_html, unsafe_allow_html=True)
+
     st.markdown("<br>", unsafe_allow_html=True)
-    
-    st.markdown("""
-    <div class="metric-title" style="margin-top: 25px;">
-    HISTORIAL RECIENTE
-    </div>
-    """, unsafe_allow_html=True)
-    
+
+    # ---------------------------------------
+    # HISTORIAL RECIENTE
+    # ---------------------------------------
+
+    st.markdown('<div class="metric-title" style="margin-top: 25px;">HISTORIAL RECIENTE</div>', unsafe_allow_html=True)
+
     if len(st.session_state.historial) == 0:
-        st.markdown("""
-        <div class="history">No existen diagnósticos.</div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="history">No existen diagnósticos.</div>', unsafe_allow_html=True)
     else:
         from datetime import datetime
         fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
         for i, item in enumerate(st.session_state.historial):
             if i == 0:
-                st.markdown(f"""
-                <div class="history">
-                    <strong>🟤 {item}</strong><br>
-                    <span style="font-size:12px; color:#8B8076;">{fecha_actual}</span>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(
+                    '<div class="history">'
+                    f'<strong>🟤 {item}</strong><br>'
+                    f'<span style="font-size:12px; color:#8B8076;">{fecha_actual}</span>'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
             else:
-                st.markdown(f"""
-                <div class="history">🟤 {item}</div>
-                """, unsafe_allow_html=True)
-    
+                st.markdown(f'<div class="history">🟤 {item}</div>', unsafe_allow_html=True)
+
     # ---------------------------------------
     # PIE DE PÁGINA
     # ---------------------------------------
-    
+
     st.markdown("""
     <hr>
     <div class="footer">
