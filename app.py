@@ -13,7 +13,7 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 # -------------------------------------------------------
 
 st.set_page_config(
-    page_title="Cafe Detecter - Diagnóstico Foliar",
+    page_title="Cafe Detecter - Diagnóstico Foliar-- Fabricio Beltrand",
     page_icon="☕",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -492,7 +492,7 @@ def generar_resultado_html(nombre, cientifico, confianza, severidad, pasos, diag
 
 st.markdown("""
 <div class="big-title">
-🌿 Captura de Imagen Foliar
+🌱 Detectar Enfermedad de Hoja - Fabricio-Beltrand🌱
 </div>
 
 <div class="subtitle">
