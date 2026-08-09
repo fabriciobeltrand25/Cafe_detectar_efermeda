@@ -1,5 +1,10 @@
 # 🌿 - Detección de Enfermedades en Café
 
+<div align="center">
+  <img width="1200" alt="AgroDetect Banner" src="https://github.com/user-attachments/assets/6f82a43b-00d7-4632-9061-21b9c4479239" />
+</div>
+
+
 Sistema web interactivo basado en Deep Learning y Computación en la Nube para el diagnóstico automático de enfermedades foliares en el cultivo de café (*Coffea arabica* / *Coffea canephora*) y generación de informes agrónomos con Inteligencia Artificial Generativa.
 
 ---
