@@ -52,5 +52,5 @@ El sistema utiliza una arquitectura cliente-servidor desacoplada basada en la nu
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/TU_USUARIO/cafe_detectar_efermeda.git]
+   git clone [https://github.com/fabriciobeltrand25/Cafe_detectar_efermeda.git]
    cd cafe_detectar_efermeda
